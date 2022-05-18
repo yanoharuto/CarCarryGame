@@ -18,6 +18,7 @@ private:
 public:
     SwapChain();
     ~SwapChain();
+    void Flip();
     DXGI_SWAP_CHAIN_DESC1* GetSwapChainDesc() { return &mSwapChainDesc; }
     IDXGISwapChain4** GetDXGISwapChain() { return &mpSwapChain; }
     D3D12_CPU_DESCRIPTOR_HANDLE PassRenderTargetFirstAddress(ID3D12Device* pDevice);

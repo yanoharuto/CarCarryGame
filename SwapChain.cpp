@@ -26,6 +26,10 @@ SwapChain::~SwapChain()
     delete mpRTV;
     mpRTV = nullptr;
 }
+void SwapChain::Flip()
+{                      //フリップまでの待ちフレーム数(待つべき垂直同期の数)
+    mpSwapChain->Present(1, 0);
+}
 //レンダーターゲットの先頭アドレスを渡す
 D3D12_CPU_DESCRIPTOR_HANDLE SwapChain::PassRenderTargetFirstAddress(ID3D12Device* pDevice)
 {

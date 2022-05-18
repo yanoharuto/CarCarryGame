@@ -11,7 +11,14 @@ LRESULT WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     }
     return DefWindowProc(hwnd, msg, wparam, lparam);
 }
+void EnableDebugLayer()
+{
+    ID3D12Debug* debugLayer = nullptr;
+    auto result = D3D12GetDebugInterface(IID_PPV_ARGS(&debugLayer));
 
+    debugLayer->EnableDebugLayer();//デバッグレイヤーを有効化する
+    debugLayer->Release();//有効化したらインターフェイスを開放する
+}
 /// <summary>
 /// コンソール画面にフォーマット付き文字列を表示
 /// </summary>
@@ -79,7 +86,6 @@ void Application::CreateFactory()
 
 void Application::InitAdapter()
 {
-
     //アダプターの列挙用
     std::vector<IDXGIAdapter*> pAdapters;
 
@@ -132,6 +138,10 @@ void Application::InitSwapChain()
 
 Application::Application()
 {
+#ifdef _DEBUG
+    //デバッグレイヤーをon
+    EnableDebugLayer();
+#endif
     DebugOutputFormatString("Show window test.");
     InitWindowClass();
     InitFeatureLevel();
@@ -154,7 +164,7 @@ void Application::Run()
     MSG msg = {};
     float ClearColor[] = { 1.0f,1.0f,0.0f,1.0f };//黄色
     mpCommanders->Clear(mpSwapChain->PassRenderTargetFirstAddress(mpDevice),ClearColor);
-
+    mpCommanders->Close();
     while (true)
     {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -167,11 +177,11 @@ void Application::Run()
         {
             break;
         } 
-        mpCommanders->Close();
+
         mpCommanders->Run(1);
         mpCommanders->Reset();
 
-
+        mpSwapChain->Flip();
     }
 }
 
