@@ -10,13 +10,18 @@ private:
     ID3D12GraphicsCommandList* mpCmdList = nullptr;
     ID3D12CommandQueue* mpCmdQueue = nullptr;
     
+
 public:
     Commanders();
     ~Commanders();
     
-    void Run();
+    void CreateCommanders(ID3D12Device* pDevice);
+    void Run(int CommandNum);
     void Close();
-    void Init(ID3D12Device* pDevice);
+    void Reset();
+    void Clear(D3D12_CPU_DESCRIPTOR_HANDLE rtvH);
+    void Clear(D3D12_CPU_DESCRIPTOR_HANDLE rtvH,float color[]);
+
     ID3D12CommandQueue* GetQueue() { return mpCmdQueue; };
 };
 

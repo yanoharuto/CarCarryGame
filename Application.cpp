@@ -108,9 +108,8 @@ void Application::InitAdapter()
 
 void Application::CreateCommanders()
 {
-    int a = 0;
     mpCommanders = new Commanders();
-    mpCommanders->Init(mpDevice);    
+    mpCommanders->CreateCommanders(mpDevice);    
 }
 
 void Application::InitSwapChain()
@@ -140,7 +139,6 @@ Application::Application()
     InitAdapter();
     CreateCommanders();
     InitSwapChain();
-    
 }
 
 Application::~Application()
@@ -154,6 +152,8 @@ void Application::Run()
     //ウィンドウ表示
     ShowWindow(mHwnd, SW_SHOW);
     MSG msg = {};
+    float ClearColor[] = { 1.0f,1.0f,0.0f,1.0f };//黄色
+    mpCommanders->Clear(mpSwapChain->PassRenderTargetFirstAddress(mpDevice),ClearColor);
 
     while (true)
     {
@@ -166,7 +166,12 @@ void Application::Run()
         if (msg.message == WM_QUIT)
         {
             break;
-        }
+        } 
+        mpCommanders->Close();
+        mpCommanders->Run(1);
+        mpCommanders->Reset();
+
+
     }
 }
 
