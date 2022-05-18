@@ -81,7 +81,11 @@ void Application::InitFeatureLevel()
 
 void Application::CreateFactory()
 {
-    auto result = CreateDXGIFactory1(IID_PPV_ARGS(&mpDxgiFactory));
+#ifdef _DEBUG
+    CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&mpDxgiFactory));
+#else
+    CreateDXGIFactory1(IID_PPV_ARGS(&mpDxgiFactory));
+#endif
 }
 
 void Application::InitAdapter()

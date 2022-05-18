@@ -9,8 +9,6 @@ private:
     ID3D12CommandAllocator* mpCmdAllocator = nullptr;
     ID3D12GraphicsCommandList* mpCmdList = nullptr;
     ID3D12CommandQueue* mpCmdQueue = nullptr;
-    
-
 public:
     Commanders();
     ~Commanders();
