@@ -108,9 +108,8 @@ void Application::InitAdapter()
 
 void Application::CreateCommanders()
 {
-    int a = 0;
     mpCommanders = new Commanders();
-    mpCommanders->Init(mpDevice);    
+    mpCommanders->CreateCommanders(mpDevice);    
 }
 
 void Application::InitSwapChain()
@@ -140,7 +139,6 @@ Application::Application()
     InitAdapter();
     CreateCommanders();
     InitSwapChain();
-    
 }
 
 Application::~Application()
@@ -154,7 +152,8 @@ void Application::Run()
     //ウィンドウ表示
     ShowWindow(mHwnd, SW_SHOW);
     MSG msg = {};
-
+    mpCommanders->Clear(mpSwapChain->PassRenderTargetFirstAddress(mpDevice));
+    
     while (true)
     {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))

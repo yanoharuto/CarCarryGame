@@ -1,6 +1,6 @@
 ﻿#include "Commanders.h"
 
-void Commanders::Init(ID3D12Device* pDevice)
+void Commanders::CreateCommanders(ID3D12Device* pDevice)
 {
     auto result = pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mpCmdAllocator));
     result = pDevice->CreateCommandList(
@@ -40,4 +40,10 @@ void Commanders::Run()
 
 void Commanders::Close()
 {
+}
+
+void Commanders::Clear(D3D12_CPU_DESCRIPTOR_HANDLE rtvH)
+{
+    auto result = mpCmdAllocator->Reset();
+    mpCmdList->OMSetRenderTargets(1, &rtvH, true, nullptr);
 }

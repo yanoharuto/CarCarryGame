@@ -1,13 +1,13 @@
 ﻿#include "SwapChain.h"
 
-void SwapChain::InitRTV()
+void SwapChain::PrepareBackBuffer()
 {
     mpRTV = new RenderTargetView(mSwapChainDesc.BufferCount);
 }
 
 void SwapChain::InitDescriptor(ID3D12Device* pDevice)
 {
-    mpRTVDescriptorHeap = new DescriptorsHeap();
+    mpRTVDescriptorHeap = new RTVDescriptorHeap();
     mpRTVDescriptorHeap->InitHeapDesc();
     pDevice->CreateDescriptorHeap(
         mpRTVDescriptorHeap->GetHeapDesc(),
@@ -26,9 +26,16 @@ SwapChain::~SwapChain()
     delete mpRTV;
     mpRTV = nullptr;
 }
-
-void SwapChain::Run()
+//レンダーターゲットの先頭アドレスを渡す
+D3D12_CPU_DESCRIPTOR_HANDLE SwapChain::PassRenderTargetFirstAddress(ID3D12Device* pDevice)
 {
+    auto bbIdx = mpSwapChain->GetCurrentBackBufferIndex();//描画し終えた方のバックバッファーの番号が返ってくる
+ 
+    auto rtvHandle = mpRTVDescriptorHeap->PassDescriptorHeapFirstAddressToHandle();
+    //必要なパディングを含む、RTVのDescriptorヒープのハンドル増分のサイズを返します
+    rtvHandle.ptr += bbIdx * pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+    return rtvHandle;
 }
 
 void SwapChain::Init(LONG WindowWidth, LONG WindowHeight,ID3D12Device* pDevice)
@@ -52,7 +59,7 @@ void SwapChain::Init(LONG WindowWidth, LONG WindowHeight,ID3D12Device* pDevice)
 
     //ウィンドウ⇔フルスクリーン切り替え可能
     mSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-    InitRTV();
+    PrepareBackBuffer();
     InitDescriptor(pDevice);
 }
 /// <summary>
@@ -64,10 +71,9 @@ void SwapChain::LinkingBufferToView(ID3D12Device* pDevice)
     //BackBufferの数だけ
     for (int idx = 0; idx < mSwapChainDesc.BufferCount; ++idx)
     {
-        auto result = mpIDXGISwapChain->GetBuffer(idx, IID_PPV_ARGS(mpRTV->GetBackBuffer(idx)));
+        auto result = mpSwapChain->GetBuffer(idx, IID_PPV_ARGS(mpRTV->GetBackBuffer(idx)));
         //DescriptorHeapのアドレスを指しているHandleのメンバ変数を移動させる
         mpRTVDescriptorHeap->SetHandlePtr( idx * pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
         pDevice->CreateRenderTargetView(*mpRTV->GetBackBuffer(idx),nullptr,mpRTVDescriptorHeap->GetHandle());
     }   
-
 }
