@@ -15,8 +15,10 @@ void DescriptorsHeap::InitHeapDesc()
     mHeapDesc.NumDescriptors = 2;//表裏の二つ
     mHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;//特に指定なし
 }
-
-void DescriptorsHeap::InitDescriptorHandle()
+/// <summary>
+/// DescriptorHeapの先頭のアドレスをHandleに渡す
+/// </summary>
+void DescriptorsHeap::PassDescriptorHeapFirstAddressToHandle()
 {
     mDescriptorHandle = mDescriptorHeaps->GetCPUDescriptorHandleForHeapStart();
 }
