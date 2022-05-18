@@ -16,9 +16,11 @@ public:
     ~Commanders();
     
     void CreateCommanders(ID3D12Device* pDevice);
-    void Run();
+    void Run(int CommandNum);
     void Close();
+    void Reset();
     void Clear(D3D12_CPU_DESCRIPTOR_HANDLE rtvH);
+    void Clear(D3D12_CPU_DESCRIPTOR_HANDLE rtvH,float color[]);
 
     ID3D12CommandQueue* GetQueue() { return mpCmdQueue; };
 };

@@ -152,8 +152,9 @@ void Application::Run()
     //ウィンドウ表示
     ShowWindow(mHwnd, SW_SHOW);
     MSG msg = {};
-    mpCommanders->Clear(mpSwapChain->PassRenderTargetFirstAddress(mpDevice));
-    
+    float ClearColor[] = { 1.0f,1.0f,0.0f,1.0f };//黄色
+    mpCommanders->Clear(mpSwapChain->PassRenderTargetFirstAddress(mpDevice),ClearColor);
+
     while (true)
     {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -165,7 +166,12 @@ void Application::Run()
         if (msg.message == WM_QUIT)
         {
             break;
-        }
+        } 
+        mpCommanders->Close();
+        mpCommanders->Run(1);
+        mpCommanders->Reset();
+
+
     }
 }
 
